@@ -1,0 +1,40 @@
+* {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+body {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: lightgreen;
+}
+
+.titleMessage {
+    margin: 15px;
+    font-size: 50px;
+    color: green;
+}
+
+#gameCanvas {
+    background-color: rgb(197, 237, 197);
+    border: 1px lightgray;
+}
+
+.menu-label {
+    display:flex;
+    justify-content: center;
+}
+
+.menu-label > div {
+    margin-top: 25px;
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.startButton {
+    margin-top: 25px;
+    margin-left: 100px;
+    margin-right: 100px;
+    height: 35px;
+    width: 100px;
+}
