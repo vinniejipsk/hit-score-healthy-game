@@ -23,18 +23,15 @@ body {
 .menu-label {
     display:flex;
     justify-content: center;
+    margin-top: 15px;
 }
 
 .menu-label > div {
-    margin-top: 25px;
     margin-left: 100px;
     margin-right: 100px;
 }
 
-.startButton {
-    margin-top: 25px;
-    margin-left: 100px;
-    margin-right: 100px;
-    height: 35px;
+.resetButton {
+    height: 25px;
     width: 100px;
 }
