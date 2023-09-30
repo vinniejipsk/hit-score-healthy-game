@@ -23,13 +23,13 @@ const player = {
     y: canvasHeight / 2,
     width: 30,
     height: 30,
-    speed: 5,
+    speed: 3,
     score: 0,
     hitpoint: 100,
 };
 // Create enemy variable.
 const enemyProjectiles = [];
-const projectileSpeed = 2;
+const projectileSpeed = 0.75;
 const projectileColor = 'red';
 
 // Fill empty array into the projectiles variable.
@@ -44,23 +44,31 @@ let cameraY = 0;
 // Draw the player.
 function drawPlayer() {
     ctx.fillStyle = "blue";
-    ctx.fillRect(player.x - cameraX - player.width / 2, player.y - cameraY - player.height / 2, player.width, player.height,
+    ctx.fillRect(
+        player.x - cameraX - player.width / 2, 
+        player.y - cameraY - player.height / 2,
+        player.width, player.height,
     );
 }
-// Draw enemy projectiles
+// Draw enemy projectiles.
 function drawEnemyProjectile() {
     for (let i = 0; i < enemyProjectiles.length; i++) {
         const projectile = enemyProjectiles[i];
         ctx.fillStyle = projectileColor;
         ctx.beginPath();
-        ctx.arc(projectile.x - cameraX, projectile.y - cameraY, projectile.radius, 0, Math.PI * 2);
+        ctx.arc(
+            projectile.x - cameraX, 
+            projectile.y - cameraY, 
+            projectile.radius, 
+            0, Math.PI * 2);
         ctx.fill();
     }
 }
-// Draw the points
+// Draw the points.
 function drawPointSpawn() {
     ctx.fillStyle = "green";
     for (const point of pointSpawn) {
+    // For collision purpose:
         // Calculate the distance between point and player and put into a variable. 
         const dx = point.x - player.x;
         const dy = point.y - player.y;
@@ -77,48 +85,86 @@ function drawPointSpawn() {
                 pointSpawn.splice(index, 1);
             }
         } else {
-            // Draw out the point arc
+    // Draw out the point arc
             ctx.beginPath();
-            ctx.arc(point.x - cameraX, point.y - cameraY, point.radius, 0, Math.PI * 2);
+            ctx.arc(
+                point.x - cameraX, 
+                point.y - cameraY, 
+                point.radius, 
+                0, Math.PI * 2);
             ctx.fill();
             ctx.closePath();
         }
     }
 }
+
+// Function that helps to update every interval.
 function updateProjectiles() {
+    const currentTime = Date.now();
+
     for (let i = 0; i < enemyProjectiles.length; i++) {
         const projectile = enemyProjectiles[i];
         projectile.x += projectile.dx;
         projectile.y += projectile.dy;
-    }
-}
-function generateEnemyProjectiles() {
-    if (enemyProjectiles.length < 25) {
-        const x = Math.random() * canvasWidth;
-        const y = Math.random() * canvasHeight;
-        const dx = (player.x - x) / canvasWidth * projectileSpeed;
-        const dy = (player.y - y) / canvasHeight * projectileSpeed;
 
-        enemyProjectiles.push({
-            x,
-            y,
-            radius: 10,
-            dx,
-            dy
-        });
+        // Set the projectiles lifespan.
+        const timeElapsed = currentTime - projectile.creationTime;
+
+        if (timeElapsed >= 14000) {
+            enemyProjectiles.splice(i, 1);
+            i--;
+        }
     }
 }
-// Function to generate random projectiles on the canvas.
-function generatePointSpawn() {
+
+// Function to generate a single random projectile on the canvas.
+function generateSingleEnemyProjectile() {
+    const x = Math.random() * canvasWidth * 5;
+    const y = Math.random() * canvasHeight * 5;
+    const dx = (player.x - x) / canvasWidth * projectileSpeed;
+    const dy = (player.y - y) / canvasHeight * projectileSpeed;
+
+    // Set initial current time.
+    const creationTime = Date.now();
+
+    enemyProjectiles.push({
+        x,
+        y,
+        radius: 5,
+        dx,
+        dy,
+        creationTime,
+    });
+}
+// Function to generate a random projectiles on the canvas.
+function generateTotalEnemyProjectiles() {
+    const enemyProjectiles = [];
+    for (let i = 0; i < 50; i++) {
+        enemyProjectiles.push(generateSingleEnemyProjectile());
+    }
+
+    return enemyProjectiles;
+}
+// Function to generate a single random point on the canvas.
+function generateSinglePointSpawn() {
     const point = {
       x: Math.random() * canvasWidth * 8,
       y: Math.random() * canvasHeight * 8,
-      radius: 5,
+      radius: 10,
     };
+
     pointSpawn.push(point);
 }
-// Set spawnPorjectiles at a certain time.
-setInterval(generateEnemyProjectiles, 2000);
+// Function to generate mutiple random points on the canvas. 
+function generateTotalPointSpawn() {
+    const pointSpawns = [];
+    // Generate how many points on the start.
+    for (let i = 0; i < 1000; i++) {
+        pointSpawns.push(generateSinglePointSpawn());
+    }
+
+    return pointSpawns;
+}
 
 // Initialize!
 initialize() 
@@ -127,14 +173,12 @@ function initialize() {
     // Clear all points from previous game.
     pointSpawn.length = 0;
 
-    // Generate how many points on the start.
-    for (let i = 0; i < 1000; i++) {
-        generatePointSpawn();
-    }
-    // Generate how many points on the start.
-    for (let i = 0; i < 1000; i++) {
-        generateEnemyProjectiles();
-    }
+    // Set spawnPorjectiles at a certain time.
+    setInterval(generateTotalEnemyProjectiles, 2000);
+
+    // Add in the total point spawns.
+    generateTotalPointSpawn();
+
     // Set back the text button.
     resetbutton.innerHTML = 'Start Game';
 }
@@ -155,7 +199,7 @@ function update() {
 
     // Add one number to player score if player hits a point.
     scoreboard.innerHTML = `${player.score}`;
-  
+
     drawPlayer();
     drawPointSpawn();
     drawEnemyProjectile();
