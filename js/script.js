@@ -1,45 +1,33 @@
-/////// Define my constants ///////
+////// d04v02 //////
+
+/// Define my constants ////
 
 // Create my canvas.
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext("2d");
 
-// Bring in reset button.
+// Bring in the HTML elements.
+const hitpoint = document.getElementById('hitpointT');
+const scoreboard = document.getElementById('scoreT');
 const resetbutton = document.querySelector('.resetButton');
-
-// Bring in the score '0' from the html as a variable.
-let scoreboard = document.getElementById('score');
 
 // Transfer the width and height from html into variables.
 const canvasWidth = canvas.width;
 const canvasHeight = canvas.height;
 
-// Create player variable.
-    // Set player status on the start.
-        // Set the player character in the center of the screen.
-        // Set the player size, hitpoint, score and movement speed.
-const player = {
-    x: canvasWidth / 2,
-    y: canvasHeight / 2,
-    width: 30,
-    height: 30,
-    speed: 3,
-    score: 0,
-    hitpoint: 100,
-};
-// Create enemy variable.
-const enemyProjectiles = [];
-const projectileSpeed = 0.75;
-const projectileColor = 'red';
+// Create player, enemy and point variable.
+let player;
+let enemyProjectiles = [];
+let pointSpawn = [];
 
-// Fill empty array into the projectiles variable.
-const pointSpawn = [];
+// Create variable for the reset interval (enemy projectile).
+let enemySpawnInterval;
 
 // Set the camera position.
 let cameraX = 0;
 let cameraY = 0;
 
-/////// Functions ///////
+/// Functions ////
 
 // Draw the player.
 function drawPlayer() {
@@ -54,7 +42,7 @@ function drawPlayer() {
 function drawEnemyProjectile() {
     for (let i = 0; i < enemyProjectiles.length; i++) {
         const projectile = enemyProjectiles[i];
-        ctx.fillStyle = projectileColor;
+        ctx.fillStyle = 'red';
         ctx.beginPath();
         ctx.arc(
             projectile.x - cameraX, 
@@ -110,19 +98,35 @@ function updateProjectiles() {
         // Set the projectiles lifespan.
         const timeElapsed = currentTime - projectile.creationTime;
 
-        if (timeElapsed >= 14000) {
+        if (timeElapsed >= 20000) {
             enemyProjectiles.splice(i, 1);
             i--;
+        } else {
+            // Check for collision with the player.
+            const dx = projectile.x - player.x;
+            const dy = projectile.y - player.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < player.width / 2 + projectile.radius) {
+                // Player is hit by the projectile, minus 10 HP.
+                player.hitpoint -= 10;
+
+                // Remove the projectile that hit the player.
+                enemyProjectiles.splice(i, 1);
+                i--;
+            }
         }
     }
 }
 
 // Function to generate a single random projectile on the canvas.
-function generateSingleEnemyProjectile() {
+function singleEnemyProjectile() {
+    let projectileSpeed = 0.85;
+
     const x = Math.random() * canvasWidth * 5;
     const y = Math.random() * canvasHeight * 5;
-    const dx = (player.x - x) / canvasWidth * projectileSpeed;
-    const dy = (player.y - y) / canvasHeight * projectileSpeed;
+    const dx = (player.x - x) / canvasWidth * (Math.random() * projectileSpeed);
+    const dy = (player.y - y) / canvasHeight * (Math.random() * projectileSpeed);
 
     // Set initial current time.
     const creationTime = Date.now();
@@ -137,16 +141,16 @@ function generateSingleEnemyProjectile() {
     });
 }
 // Function to generate a random projectiles on the canvas.
-function generateTotalEnemyProjectiles() {
+function generateEnemyProjectiles() {
     const enemyProjectiles = [];
     for (let i = 0; i < 50; i++) {
-        enemyProjectiles.push(generateSingleEnemyProjectile());
+        enemyProjectiles.push(singleEnemyProjectile());
     }
 
     return enemyProjectiles;
 }
 // Function to generate a single random point on the canvas.
-function generateSinglePointSpawn() {
+function singlePointSpawn() {
     const point = {
       x: Math.random() * canvasWidth * 8,
       y: Math.random() * canvasHeight * 8,
@@ -156,31 +160,49 @@ function generateSinglePointSpawn() {
     pointSpawn.push(point);
 }
 // Function to generate mutiple random points on the canvas. 
-function generateTotalPointSpawn() {
+function generatePointSpawn() {
     const pointSpawns = [];
     // Generate how many points on the start.
     for (let i = 0; i < 1000; i++) {
-        pointSpawns.push(generateSinglePointSpawn());
+        pointSpawns.push(singlePointSpawn());
     }
 
     return pointSpawns;
 }
 
-// Initialize!
+/// Initialize! ///
 initialize() 
 
 function initialize() {
+    player = {
+        x: canvasWidth / 2,
+        y: canvasHeight / 2,
+        width: 30,
+        height: 30,
+        speed: 3,
+        score: 0,
+        hitpoint: 100,
+    };
+
     // Clear all points from previous game.
     pointSpawn.length = 0;
 
-    // Set spawnPorjectiles at a certain time.
-    setInterval(generateTotalEnemyProjectiles, 2000);
+    // Clear the enemy projectiles array.
+    enemyProjectiles.length = 0;
+
+    // Clear the previous enemy spawn interval if it exists.
+    if (enemySpawnInterval) {
+        clearInterval(enemySpawnInterval);
+    }
+    
+    // Set up a new interval for generating enemy projectiles.
+    enemySpawnInterval = setInterval(generateEnemyProjectiles, 2000);
 
     // Add in the total point spawns.
-    generateTotalPointSpawn();
+    generatePointSpawn();
 
     // Set back the text button.
-    resetbutton.innerHTML = 'Start Game';
+    resetbutton.innerHTML = 'Reset Game';
 }
 
 function update() {
@@ -200,6 +222,9 @@ function update() {
     // Add one number to player score if player hits a point.
     scoreboard.innerHTML = `${player.score}`;
 
+    // Minus 10 numbers to player hitpoint if player hits a enemy projectile.
+    hitpoint.innerHTML = `${player.hitpoint}`
+
     drawPlayer();
     drawPointSpawn();
     drawEnemyProjectile();
@@ -207,7 +232,7 @@ function update() {
     requestAnimationFrame(update);
 }
 
-////// Event Listensers //////
+/// Event Listensers ///
 
 // function activates when the player presses a directional key button. 
 const keyPress = {};
