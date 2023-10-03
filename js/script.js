@@ -1,6 +1,6 @@
-////// d04v02 //////
+///////// d05v01 //////////
 
-/// Define my constants ////
+////// Define my constants ///////
 
 // Create my canvas.
 const canvas = document.getElementById('gameCanvas');
@@ -22,6 +22,9 @@ let pointSpawn = [];
 
 // Create variable for the reset interval (enemy projectile).
 let enemySpawnInterval;
+
+// Create a game over variable.
+let gameOver = false;
 
 // Set the camera position.
 let cameraX = 0;
@@ -54,7 +57,6 @@ function drawEnemyProjectile() {
 }
 // Draw the points.
 function drawPointSpawn() {
-    ctx.fillStyle = "green";
     for (const point of pointSpawn) {
     // For collision purpose:
         // Calculate the distance between point and player and put into a variable. 
@@ -73,7 +75,8 @@ function drawPointSpawn() {
                 pointSpawn.splice(index, 1);
             }
         } else {
-    // Draw out the point arc
+            // Draw out the point arc
+            ctx.fillStyle = "green";
             ctx.beginPath();
             ctx.arc(
                 point.x - cameraX, 
@@ -86,43 +89,11 @@ function drawPointSpawn() {
     }
 }
 
-// Function that helps to update every interval.
-function updateProjectiles() {
-    const currentTime = Date.now();
-
-    for (let i = 0; i < enemyProjectiles.length; i++) {
-        const projectile = enemyProjectiles[i];
-        projectile.x += projectile.dx;
-        projectile.y += projectile.dy;
-
-        // Set the projectiles lifespan.
-        const timeElapsed = currentTime - projectile.creationTime;
-
-        if (timeElapsed >= 20000) {
-            enemyProjectiles.splice(i, 1);
-            i--;
-        } else {
-            // Check for collision with the player.
-            const dx = projectile.x - player.x;
-            const dy = projectile.y - player.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            if (distance < player.width / 2 + projectile.radius) {
-                // Player is hit by the projectile, minus 10 HP.
-                player.hitpoint -= 10;
-
-                // Remove the projectile that hit the player.
-                enemyProjectiles.splice(i, 1);
-                i--;
-            }
-        }
-    }
-}
-
 // Function to generate a single random projectile on the canvas.
 function singleEnemyProjectile() {
+    //Set the enemy speed.
     let projectileSpeed = 0.85;
-
+    // Set the randomize spawn placement.
     const x = Math.random() * canvasWidth * 5;
     const y = Math.random() * canvasHeight * 5;
     const dx = (player.x - x) / canvasWidth * (Math.random() * projectileSpeed);
@@ -146,9 +117,9 @@ function generateEnemyProjectiles() {
     for (let i = 0; i < 50; i++) {
         enemyProjectiles.push(singleEnemyProjectile());
     }
-
     return enemyProjectiles;
 }
+
 // Function to generate a single random point on the canvas.
 function singlePointSpawn() {
     const point = {
@@ -156,7 +127,6 @@ function singlePointSpawn() {
       y: Math.random() * canvasHeight * 8,
       radius: 10,
     };
-
     pointSpawn.push(point);
 }
 // Function to generate mutiple random points on the canvas. 
@@ -166,11 +136,43 @@ function generatePointSpawn() {
     for (let i = 0; i < 1000; i++) {
         pointSpawns.push(singlePointSpawn());
     }
-
     return pointSpawns;
 }
+// Function that helps to update every interval.
+function updateProjectiles() {
+    const currentTime = Date.now();
 
-/// Initialize! ///
+    for (let i = 0; i < enemyProjectiles.length; i++) {
+        const projectile = enemyProjectiles[i];
+        projectile.x += projectile.dx;
+        projectile.y += projectile.dy;
+
+        // Set the projectiles lifespan.
+        const timeElapsed = currentTime - projectile.creationTime;
+
+        if (timeElapsed >= 20000) {
+            enemyProjectiles.splice(i, 1);
+            i--;
+        } else {
+            // Check for collision with the player using Math square root.
+            const dx = projectile.x - player.x;
+            const dy = projectile.y - player.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < player.width / 2 + projectile.radius) {
+                // Player is hit by the projectile, minus 10 HP.
+                player.hitpoint -= 10;
+
+                // Remove the projectile that hit the player.
+                enemyProjectiles.splice(i, 1);
+                i--;
+            }
+        }
+    }
+}
+
+
+////// Initialize! //////
 initialize() 
 
 function initialize() {
@@ -181,7 +183,7 @@ function initialize() {
         height: 30,
         speed: 3,
         score: 0,
-        hitpoint: 100,
+        hitpoint: 10,
     };
 
     // Clear all points from previous game.
@@ -203,9 +205,18 @@ function initialize() {
 
     // Set back the text button.
     resetbutton.innerHTML = 'Reset Game';
+
+    drawPlayer();
+    drawPointSpawn();
+    drawEnemyProjectile();
+    updateProjectiles();
+
 }
 
 function update() {
+    if (gameOver) {
+        return;
+    }
     // Move the player based on player input. Directional keys are set here.
     if (keyPress.ArrowUp) player.y -= player.speed;
     if (keyPress.ArrowDown) player.y += player.speed;
@@ -225,14 +236,31 @@ function update() {
     // Minus 10 numbers to player hitpoint if player hits a enemy projectile.
     hitpoint.innerHTML = `${player.hitpoint}`
 
+    // If player hitpoints becomes 0, the player loser text displayed.
+    if (player.hitpoint <= 0) {
+        // Set the game over to true.
+        gameOver = true; 
+        // Message of "You Lose! comes out"
+        ctx.fillStyle = "red";
+        ctx.font = "100px Arial";
+        ctx.fillText('YOU LOSE', canvasWidth / 2 - 250, canvasHeight / 2 + 25);
+        ctx.fillStyle = "grey";
+        ctx.font = "25px Arial";
+        ctx.fillText('Restart the game!', canvasWidth / 2 - 100, canvasHeight / 2 + 80);
+        // Remove all enemies,points and player.
+
+        return;
+    }
+
     drawPlayer();
     drawPointSpawn();
     drawEnemyProjectile();
     updateProjectiles();
     requestAnimationFrame(update);
+
 }
 
-/// Event Listensers ///
+////// Event Listensers //////
 
 // function activates when the player presses a directional key button. 
 const keyPress = {};
@@ -245,7 +273,12 @@ window.addEventListener("keyup", (event) => {
 
 // function for reset button.
 resetbutton.addEventListener('click', () => {
+ // Reset the game over state
     initialize();
+    if (gameOver) {
+        gameOver = false;
+        update();
+    }
 });
 
 ////// It will keep on updating the game constantly. //////
