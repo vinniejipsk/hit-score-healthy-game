@@ -1,4 +1,4 @@
-///////// d05v01 //////////
+///////// d06v02 //////////
 
 ////// Define my constants ///////
 
@@ -24,7 +24,7 @@ let pointSpawn = [];
 let enemySpawnInterval;
 
 // Create a game over variable.
-let gameOver = false;
+let gamePause = false;
 
 // Set the camera position.
 let cameraX = 0;
@@ -130,8 +130,8 @@ function generateEnemyProjectiles() {
 // Function to generate a single random point on the canvas.
 function singlePointSpawn() {
     const point = {
-      x: Math.random() * canvasWidth * 8,
-      y: Math.random() * canvasHeight * 8,
+      x: Math.random() * canvasWidth * 5,
+      y: Math.random() * canvasHeight * 5,
       radius: 10,
     };
     pointSpawn.push(point);
@@ -188,7 +188,7 @@ function youWinText() {
     winScoreElement.textContent = player.score; 
     winMessage.style.display = 'block';
 
-    gameOver = true;
+    gamePause = true;
 }
 
 function youLoseText() {
@@ -200,7 +200,7 @@ function youLoseText() {
     loseScoreElement.textContent = player.score;
     loseMessage.style.display = 'block';
 
-    gameOver = true;
+    gamePause = true;
 }
 
 // timer function.
@@ -267,14 +267,23 @@ function initialize() {
 }
 
 function update() {
-    if (gameOver) {
+    if (gamePause) {
         return;
     }
+
     // Move the player based on player input. Directional keys are set here.
-    if (keyPress.ArrowUp) player.y -= player.speed;
-    if (keyPress.ArrowDown) player.y += player.speed;
-    if (keyPress.ArrowLeft) player.x -= player.speed;
-    if (keyPress.ArrowRight) player.x += player.speed;
+    if (keyPress.ArrowUp && player.y - player.speed > 0) {
+        player.y -= player.speed;
+    }
+    if (keyPress.ArrowDown && player.y + player.speed < canvasHeight * 5) {
+        player.y += player.speed;
+    }
+    if (keyPress.ArrowLeft && player.x - player.speed > 0) {
+        player.x -= player.speed;
+    }
+    if (keyPress.ArrowRight && player.x + player.speed < canvasWidth * 5) {
+        player.x += player.speed;
+    }
 
     // Update the camera position to follow the player.
     cameraX = player.x - canvasWidth / 2;
@@ -322,8 +331,8 @@ resetbutton.addEventListener('click', () => {
 
     // Reset the game over state
     initialize();
-    if (gameOver) {
-        gameOver = false;
+    if (gamePause) {
+        gamePause = false;
         update();
     }
 });
