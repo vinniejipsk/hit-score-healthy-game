@@ -40,6 +40,7 @@ Click on the "Reset Button" after you win or you lose.
 # Biggest Challenges
 
 1. Draw out a single projectile:
+
 ```
 function drawEnemyProjectile() {
     for (let i = 0; i < enemyProjectiles.length; i++) {
@@ -62,6 +63,7 @@ function drawEnemyProjectile() {
 }
 ```
 2. Create single and generator functions:
+
 ```
 function singleEnemyProjectile() {
     //Set the enemy speed.
@@ -93,7 +95,8 @@ function generateEnemyProjectiles() {
     return enemyProjectiles;
 }
 ```
-3. Create a specific update function.
+3. Create a specific update function:
+
 ```
 function updateProjectiles() {
     const currentTime = Date.now();
@@ -127,7 +130,8 @@ function updateProjectiles() {
     }
 }
 ```
-4. Bring into this main update function
+4. Bring into this main update function:
+
 ```
 function update() {
 
@@ -141,7 +145,8 @@ function update() {
 
 }
 ```
-5. Clear intervals to avoid initial stacking and after.
+5. Clear intervals to avoid initial stacking and after:
+   
 ```
 resetbutton.addEventListener('click', () => {
 
@@ -158,7 +163,11 @@ resetbutton.addEventListener('click', () => {
     }
 });
 ```
+# What I have learnt
 
+- Complete the basic requirement of the project before going for the hard ones. (Tried to coded homing projectile for a few days)
+- Make use of Pseudocode more. Use contructor, classes and name the functions properly. (Easier to read and convenient. class.js file)
+- Think and throw out the simple game logic first. (There's where functions comes after)
 
 # Next Steps for my game
 
