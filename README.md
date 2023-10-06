@@ -36,9 +36,11 @@ This is the basic instruction of the game:
 - Press your direction keys ( ↑ ↓ → ← ) on your keyboard.
 
 Resetting of the game:
-- Click on the "Reset Button" after you win or you lose.
+- Click on the "Reset Button" after you win, you lose or whenever you want.
 
 # Biggest Challenges
+
+In order to create a massive projectiles chasing after the player on a canvas, I need to set a few functions.
 
 1. Draw out a single projectile:
    
