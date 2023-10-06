@@ -31,7 +31,7 @@ let cameraX = 0;
 let cameraY = 0;
 
 // Create my timer.
-const timerDuration = 30;
+const timerDuration = 60;
 let initialTimer = timerDuration;
 let timer = timerDuration;
 let timerInterval;
@@ -120,7 +120,7 @@ function singleEnemyProjectile() {
 // Function to generate a random projectiles on the canvas.
 function generateEnemyProjectiles() {
     const enemyProjectiles = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 40; i++) {
         enemyProjectiles.push(singleEnemyProjectile());
     }
     return enemyProjectiles;
@@ -230,7 +230,7 @@ function initialize() {
         height: 30,
         speed: 3,
         score: 0,
-        hitpoint: 100,
+        hitpoint: 50,
     };
 
     // Clear all points from previous game.
