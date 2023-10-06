@@ -1,4 +1,4 @@
-///////// d06v02 //////////
+///////// d06v03 //////////
 
 ////// Define my constants ///////
 
@@ -41,57 +41,56 @@ let timerInterval;
 
 // Draw the player.
 function drawPlayer() {
-    ctx.fillStyle = "blue";
-    ctx.fillRect(
-        player.x - cameraX - player.width / 2, 
-        player.y - cameraY - player.height / 2,
-        player.width, player.height,
-    );
+    const playerImage = document.getElementById('playerImage');
+    const playerX = player.x - cameraX - (player.width / 2);
+    const playerY = player.y - cameraY - (player.height / 2);
+
+    // Draw the player character image
+    ctx.drawImage(playerImage, playerX, playerY, player.width * 2, player.height * 2);
 }
 // Draw enemy projectiles.
 function drawEnemyProjectile() {
     for (let i = 0; i < enemyProjectiles.length; i++) {
         const projectile = enemyProjectiles[i];
-        ctx.fillStyle = 'red';
-        ctx.beginPath();
-        ctx.arc(
-            projectile.x - cameraX, 
-            projectile.y - cameraY, 
-            projectile.radius, 
-            0, Math.PI * 2);
-        ctx.fill();
+
+        // Load the projectile image
+        const projectileImage = document.getElementById('projectileImage');
+
+        // Calculate the position to draw the projectile image
+        const projectileX = projectile.x - cameraX - projectile.radius;
+        const projectileY = projectile.y - cameraY - projectile.radius;
+
+        // Draw the projectile image
+        ctx.drawImage(
+            projectileImage, 
+            projectileX, 
+            projectileY, 
+            projectile.radius * 10, projectile.radius * 10);
     }
 }
 // Draw the points.
 function drawPointSpawn() {
+    // Bring in the image from html.
+    const pointImage = document.getElementById('pointImage');
+
     for (const point of pointSpawn) {
-    // For collision purpose:
-        // Calculate the distance between point and player and put into a variable. 
+        const pointX = point.x - cameraX - point.radius;
+        const pointY = point.y - cameraY - point.radius;
+
+        // Draw the point image
+        ctx.drawImage(pointImage, pointX, pointY, point.radius * 5, point.radius * 6);
+
+        // For collision purpose:
         const dx = point.x - player.x;
         const dy = point.y - player.y;
-        // Using square root and calculate to determine the distance.
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < player.width / 2 + point.radius) {
-            // Player score a point
+        if (distance < player.width / 1.25 + point.radius) {
             player.score++;
-            // Remove point arc that is collided by player.
-                // splice out the point index.
             const index = pointSpawn.indexOf(point);
             if (index !== -1) {
                 pointSpawn.splice(index, 1);
             }
-        } else {
-            // Draw out the point arc
-            ctx.fillStyle = "green";
-            ctx.beginPath();
-            ctx.arc(
-                point.x - cameraX, 
-                point.y - cameraY, 
-                point.radius, 
-                0, Math.PI * 2);
-            ctx.fill();
-            ctx.closePath();
         }
     }
 }
@@ -190,7 +189,6 @@ function youWinText() {
 
     gamePause = true;
 }
-
 function youLoseText() {
     clearInterval(timerInterval);
     // Show the "YOU LOSE" message box
@@ -232,7 +230,7 @@ function initialize() {
         height: 30,
         speed: 3,
         score: 0,
-        hitpoint: 10,
+        hitpoint: 100,
     };
 
     // Clear all points from previous game.
@@ -272,6 +270,7 @@ function update() {
     }
 
     // Move the player based on player input. Directional keys are set here.
+    // Multiply with a number so the player don't out the playable zone.
     if (keyPress.ArrowUp && player.y - player.speed > 0) {
         player.y -= player.speed;
     }
