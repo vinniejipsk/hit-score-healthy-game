@@ -9,4 +9,4 @@ Those nasty food will deduct your hitpoint so beware of it. The game is tough as
 For now, this game is good for web browser. So enjoy to the fullest!
 
 # Screenshots of the game
-
+![Screenshot1](https://github.com/vinniejipsk/hit-score-healthy-game/blob/main/assets/image/screenshot/screenshot1.jpg)
