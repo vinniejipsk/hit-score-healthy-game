@@ -30,6 +30,13 @@ let gameOver = false;
 let cameraX = 0;
 let cameraY = 0;
 
+// Create my timer.
+const timerDuration = 30;
+let initialTimer = timerDuration;
+let timer = timerDuration;
+let timerInterval;
+
+
 /// Functions ////
 
 // Draw the player.
@@ -138,6 +145,7 @@ function generatePointSpawn() {
     }
     return pointSpawns;
 }
+
 // Function that helps to update every interval.
 function updateProjectiles() {
     const currentTime = Date.now();
@@ -171,6 +179,47 @@ function updateProjectiles() {
     }
 }
 
+function youWinText() {
+    clearInterval(timerInterval);
+    // Show the "YOU WIN" message box
+    const winMessage = document.getElementById('winMessage');
+    const winScoreElement = document.getElementById('winScore');
+    // Show the player score message box
+    winScoreElement.textContent = player.score; 
+    winMessage.style.display = 'block';
+
+    gameOver = true;
+}
+
+function youLoseText() {
+    clearInterval(timerInterval);
+    // Show the "YOU LOSE" message box
+    const loseMessage = document.getElementById('loseMessage');
+    const loseScoreElement = document.getElementById('loseScore');
+    // Show the player score message box
+    loseScoreElement.textContent = player.score;
+    loseMessage.style.display = 'block';
+
+    gameOver = true;
+}
+
+// timer function.
+function updateTimer() {
+    if (timer > 0) {
+        timer--;
+        document.querySelector('#timer').textContent = `Time Left: ${timer} seconds`;
+    } else {
+        youWinText();
+    }
+    // If player hitpoints becomes 0, the player loser text displayed.
+    if (player.hitpoint <= 0) {
+        youLoseText();
+    }
+}
+
+function startTimer() {
+    timerInterval = setInterval(updateTimer, 1000);
+}
 
 ////// Initialize! //////
 initialize() 
@@ -206,10 +255,14 @@ function initialize() {
     // Set back the text button.
     resetbutton.innerHTML = 'Reset Game';
 
+    // Set back the timer.
+    document.querySelector('#timer').textContent = `Time Left: ${timer} seconds`;
+
     drawPlayer();
     drawPointSpawn();
     drawEnemyProjectile();
     updateProjectiles();
+    startTimer()
 
 }
 
@@ -234,23 +287,7 @@ function update() {
     scoreboard.innerHTML = `${player.score}`;
 
     // Minus 10 numbers to player hitpoint if player hits a enemy projectile.
-    hitpoint.innerHTML = `${player.hitpoint}`
-
-    // If player hitpoints becomes 0, the player loser text displayed.
-    if (player.hitpoint <= 0) {
-        // Set the game over to true.
-        gameOver = true; 
-        // Message of "You Lose! comes out"
-        ctx.fillStyle = "red";
-        ctx.font = "100px Arial";
-        ctx.fillText('YOU LOSE', canvasWidth / 2 - 250, canvasHeight / 2 + 25);
-        ctx.fillStyle = "grey";
-        ctx.font = "25px Arial";
-        ctx.fillText('Restart the game!', canvasWidth / 2 - 100, canvasHeight / 2 + 80);
-        // Remove all enemies,points and player.
-
-        return;
-    }
+    hitpoint.innerHTML = `${player.hitpoint}`;
 
     drawPlayer();
     drawPointSpawn();
@@ -273,7 +310,17 @@ window.addEventListener("keyup", (event) => {
 
 // function for reset button.
 resetbutton.addEventListener('click', () => {
- // Reset the game over state
+    // Hide the "YOU WIN" and "YOU LOSE" message boxes
+    winMessage.style.display = 'none';
+    loseMessage.style.display = 'none';
+
+    // Reset the timer to initial seconds
+    timer = initialTimer;
+
+    // Clear the previous timer interval
+    clearInterval(timerInterval);
+
+    // Reset the game over state
     initialize();
     if (gameOver) {
         gameOver = false;
