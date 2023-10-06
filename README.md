@@ -23,7 +23,8 @@ If your hitpoint goes 0, you will lose:
 
 # Technologies Used
 
-- JavaScript, CSS, HTML
+- JavaScript, CSS, HTML.
+- requestAnimationFrame in JS.
 - Github for storing my data/codes.
 
 # Getting Started
@@ -40,7 +41,7 @@ Click on the "Reset Button" after you win or you lose.
 # Biggest Challenges
 
 1. Draw out a single projectile:
-
+   
 ```
 function drawEnemyProjectile() {
     for (let i = 0; i < enemyProjectiles.length; i++) {
@@ -63,7 +64,7 @@ function drawEnemyProjectile() {
 }
 ```
 2. Create single and generator functions:
-
+   
 ```
 function singleEnemyProjectile() {
     //Set the enemy speed.
@@ -96,7 +97,7 @@ function generateEnemyProjectiles() {
 }
 ```
 3. Create a specific update function:
-
+   
 ```
 function updateProjectiles() {
     const currentTime = Date.now();
@@ -131,7 +132,7 @@ function updateProjectiles() {
 }
 ```
 4. Bring into this main update function:
-
+   
 ```
 function update() {
 
