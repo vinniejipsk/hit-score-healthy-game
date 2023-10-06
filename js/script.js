@@ -23,7 +23,7 @@ let pointSpawn = [];
 // Create variable for the reset interval (enemy projectile).
 let enemySpawnInterval;
 
-// Create a game over variable.
+// Create a game pause with a variable.
 let gamePause = false;
 
 // Set the camera position.
@@ -120,7 +120,7 @@ function singleEnemyProjectile() {
 // Function to generate a random projectiles on the canvas.
 function generateEnemyProjectiles() {
     const enemyProjectiles = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 40; i++) {
         enemyProjectiles.push(singleEnemyProjectile());
     }
     return enemyProjectiles;
@@ -230,7 +230,7 @@ function initialize() {
         height: 30,
         speed: 3,
         score: 0,
-        hitpoint: 100,
+        hitpoint: 50,
     };
 
     // Clear all points from previous game.
@@ -270,7 +270,7 @@ function update() {
     }
 
     // Move the player based on player input. Directional keys are set here.
-    // Multiply with a number so the player don't out the playable zone.
+    // Multiply the canvas axis with a number so the player don't out the playable zone.
     if (keyPress.ArrowUp && player.y - player.speed > 0) {
         player.y -= player.speed;
     }
