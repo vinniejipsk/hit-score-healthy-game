@@ -33,10 +33,10 @@ Link of the game:
 https://vinniejipsk.github.io/hit-score-healthy-game/
 
 This is the basic instruction of the game:
-Press your direction keys ( ↑ ↓ → ← ) on your keyboard.
+- Press your direction keys ( ↑ ↓ → ← ) on your keyboard.
 
 Resetting of the game:
-Click on the "Reset Button" after you win or you lose.
+- Click on the "Reset Button" after you win or you lose.
 
 # Biggest Challenges
 
