@@ -177,3 +177,9 @@ resetbutton.addEventListener('click', () => {
 - Power Ups after player hitting certain number of points. (Using image, increase speed and etc.)
 - Add Homing Projectiles.
 - Adjust the game for mobile platforms.
+
+# Others
+
+- Any Q&A?
+
+Thank you!
