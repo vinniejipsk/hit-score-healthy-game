@@ -214,6 +214,7 @@ resetbutton.addEventListener('click', () => {
 - Enchance the visuals. (More animations such as the opacity and etc. Try to avoid looking like Windows XP games.)
 - Power Ups after player hitting certain number of points. (Using image, increase speed and etc.)
 - Add Homing Projectiles.
+- Can literally pause the game.
 - Adjust the game for mobile platforms.
 
 # Others
