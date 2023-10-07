@@ -204,9 +204,10 @@ resetbutton.addEventListener('click', () => {
 ```
 # What I have learnt
 
-- Complete the basic requirement of the project before going for the hard ones. (Tried to coded homing projectile for a few days)
-- Make use of Pseudocode more. Use contructor, classes and name the functions properly. (Easier to read and convenient. class.js file)
-- Think and throw out the simple game logic first. (There's where functions comes after)
+- Complete the basic requirement of the project before going for the hard ones. (Tried to code homing projectile for a few days.)
+- Make use of Pseudocode more. Use contructor, classes and name the functions properly. (Easier to read and convenient. Having class.js file is great.)
+- Always put text on html and style on CSS rather than doing in on JS. (ctx.fillText and ctx. features bugs out many part of my codes.) 
+- Think and throw out the simple game logic first. (There's where functions comes after.)
 
 # Next Steps for my game
 
