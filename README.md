@@ -38,6 +38,42 @@ This is the basic instruction of the game:
 Resetting of the game:
 - Click on the "Reset Button" after you win, you lose or whenever you want.
 
+# Favourite Function
+
+The update function! (Directional keys)
+
+```
+function update() {
+    if (gamePause) {
+        return;
+    }
+
+    // Move the player based on player input. Directional keys are set here.
+    // Multiply with a number so the player don't out the playable zone.
+    if (keyPress.ArrowUp && player.y - player.speed > 0) {
+        player.y -= player.speed;
+    }
+    if (keyPress.ArrowDown && player.y + player.speed < canvasHeight * 5) {
+        player.y += player.speed;
+    }
+    if (keyPress.ArrowLeft && player.x - player.speed > 0) {
+        player.x -= player.speed;
+    }
+    if (keyPress.ArrowRight && player.x + player.speed < canvasWidth * 5) {
+        player.x += player.speed;
+    }
+
+    // Update the camera position to follow the player.
+    cameraX = player.x - canvasWidth / 2;
+    cameraY = player.y - canvasHeight / 2;
+  
+    ///// other codes.... ///////
+
+    requestAnimationFrame(update);
+
+}
+```
+
 # Biggest Challenges
 
 In order to create a massive projectiles chasing after the player on a canvas, I need to set a few functions.
